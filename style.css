@@ -1,0 +1,22 @@
+/* Apply Cairo font and base styles */
+body { 
+    font-family: 'Cairo', sans-serif; 
+}
+
+/* Styles for modal transitions */
+.modal-base {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.modal-hidden {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+}
+
+.modal-visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
